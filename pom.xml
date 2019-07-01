@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>de.averbis.textanalysis</groupId>
+	<artifactId>parent-pom-typesystems</artifactId>
+	<version>3.21.0-SNAPSHOT</version>
+	<name>${project.artifactId}</name>
+	<description>The parent pom for all Averbis type systems</description>
+
+	<packaging>pom</packaging>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<developers>
+	    <developer>
+			<email>info@averbis.com</email>
+			<organization>Averbis</organization>
+			<organizationUrl>https://averbis.com/</organizationUrl>
+		</developer>
+	</developers>
+	
+	<scm>
+		<connection>scm:git:git://github.com/averbis/parent-pom-typesystems</connection>
+		<developerConnection>scm:git:git@github.com:averbis/parent-pom-typesystems.git</developerConnection>
+		<url>https://github.com/averbis/parent-pom-typesystems</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<properties>
+		<groupIdAsPath>de/averbis/textanalysis</groupIdAsPath>
+		<java-version>1.8</java-version>
+		<uima-version>2.10.3</uima-version>
+		<saxon.version>8.7</saxon.version>
+		<typesystem-stylesheet-location>${basedir}/../doc/typesystem.xslt</typesystem-stylesheet-location>
+	</properties>
+
+	<distributionManagement>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+		</repository>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+	
+
+	<build>
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java-version}</source>
+					<target>${java-version}</target>
+					<optimize>true</optimize>
+					<debug>true</debug>
+					<showDeprecation>true</showDeprecation>
+					<showWarnings>true</showWarnings>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				
+				<plugin>
+					<groupId>org.apache.uima</groupId>
+					<artifactId>jcasgen-maven-plugin</artifactId>
+					<version>${uima-version}</version>
+				</plugin>
+			
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>xml-maven-plugin</artifactId>
+					<version>1.0</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>transform</goal>
+							</goals>
+							<phase>generate-resources</phase>
+						</execution>
+					</executions>
+					<configuration>
+						<forceCreation>true</forceCreation>
+						<transformationSets>
+							<transformationSet>
+								<dir>${basedir}/src/main/resources/${groupIdAsPath}/typesystems</dir>
+								<includes>
+									<include>**/*TypeSystem.xml</include>
+								</includes>
+								<stylesheet>${typesystem-stylesheet-location}</stylesheet>
+								<outputDir>${project.build.directory}/generated-sources/doc</outputDir>
+								<fileMappers>
+									<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FlattenFileMapper" />
+									<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+										<targetExtension>.adoc</targetExtension>
+									</fileMapper>
+								</fileMappers>
+							</transformationSet>
+						</transformationSets>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>net.sf.saxon</groupId>
+							<artifactId>saxon</artifactId>
+							<version>${saxon.version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.7</version>
+					<executions>
+						<!-- Copies the xml docs to doc/sources -->
+						<execution>
+							<id>copy-docs</id>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>copy-resources</goal>
+							</goals>
+							<configuration>
+								<encoding>UTF-8</encoding>
+								<outputDirectory>${project.build.directory}/doc/sources</outputDirectory>
+								<resources>
+									<resource>
+										<directory>src/main/doc</directory>
+										<filtering>true</filtering>
+										<includes>
+											<include>*.adoc</include>
+											<include>figures/*.png</include>
+										</includes>
+									</resource>
+									<resource>
+										<directory>${project.build.directory}/generated-sources/doc</directory>
+										<filtering>true</filtering>
+										<includes>
+											<include>*.adoc</include>
+										</includes>
+									</resource>
+								</resources>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.6</version>
+					<executions>
+						<execution>
+							<id>make doc resources</id>
+							<goals>
+								<goal>single</goal>
+							</goals>
+							<phase>prepare-package</phase>
+							<configuration>
+								<descriptors>
+									<descriptor>src/main/assembly/doc.xml</descriptor>
+								</descriptors>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											xml-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.0,)
+										</versionRange>
+										<goals>
+											<goal>transform</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+	
+	<profiles>
+		<profile>
+			<id>release-sign-artifacts</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>		
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.6</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	
+</project>
