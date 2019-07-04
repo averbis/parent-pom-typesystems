@@ -23,5 +23,3 @@
 hs_err_pid*
 .settings/org.eclipse.m2e.core.prefs
 .project
-release.properties
-pom.xml.releaseBackup
