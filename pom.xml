@@ -30,7 +30,7 @@
 		<connection>scm:git:git://github.com/averbis/parent-pom-typesystems</connection>
 		<developerConnection>scm:git:git@github.com:averbis/parent-pom-typesystems.git</developerConnection>
 		<url>https://github.com/averbis/parent-pom-typesystems</url>
-		<tag>master</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<properties>
