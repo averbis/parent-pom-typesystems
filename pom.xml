@@ -80,6 +80,20 @@
 					<outputDirectory>${project.build.directory}/docs/apidocs</outputDirectory>
 					<reportOutputDirectory>${project.build.directory}/docs/apidocs</reportOutputDirectory>
 					<additionalparam>${javadoc.opts}</additionalparam>
+					<tags>
+						<tag>
+							<name>generated</name>
+							<placement>X</placement>
+						</tag>
+						<tag>
+							<name>ordered</name>
+							<placement>X</placement>
+						</tag>
+						<tag>
+							<name>modifiable</name>
+							<placement>X</placement>
+						</tag>
+					</tags>
 				</configuration>
 			</plugin>
 
