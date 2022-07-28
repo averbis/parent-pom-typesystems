@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>de.averbis.textanalysis</groupId>
 	<artifactId>parent-pom-typesystems</artifactId>
 	<version>4.1.0-SNAPSHOT</version>
-	<name>${project.artifactId}</name>
-	<description>The parent pom for all Averbis type systems</description>
-
 	<packaging>pom</packaging>
+
+	<description>The parent pom for all Averbis type systems</description>
 
 	<url>https://github.com/averbis/parent-pom-typesystems/</url>
 
@@ -19,15 +20,15 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	
+
 	<developers>
-	    <developer>
+		<developer>
 			<email>info@averbis.com</email>
 			<organization>Averbis</organization>
 			<organizationUrl>https://averbis.com/</organizationUrl>
 		</developer>
 	</developers>
-	
+
 	<scm>
 		<connection>scm:git:git://github.com/averbis/parent-pom-typesystems</connection>
 		<developerConnection>scm:git:git@github.com:averbis/parent-pom-typesystems.git</developerConnection>
@@ -39,7 +40,7 @@
 		<groupIdAsPath>de/averbis/textanalysis</groupIdAsPath>
 		<java-version>1.8</java-version>
 		<javadoc.opts>-Xdoclint:none</javadoc.opts>
-		<uima-version>3.2.0</uima-version>
+		<uima-version>3.4.0-SNAPSHOT</uima-version>
 		<saxon.version>8.7</saxon.version>
 		<typesystem-stylesheet-location>${basedir}/../doc/typesystem.xslt</typesystem-stylesheet-location>
 	</properties>
@@ -54,12 +55,76 @@
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
-	
+
 
 	<build>
-
 		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>5.1.6</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment>
+						<_dsannotations>*</_dsannotations>
+						<_metatypeannotations>*</_metatypeannotations>
+						<Require-Capability>osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"</Require-Capability>
+						<Provide-Capability>osgi.serviceloader;osgi.serviceloader=org.apache.uima.spi.TypeSystemDescriptionProvider</Provide-Capability>
+					</instructions>
+				</configuration>
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+						<configuration>
+							<niceManifest>true</niceManifest>
+							<exportScr>true</exportScr>
+							<scrLocation>${project.basedir}/OSGI-INF/..</scrLocation>
+							<manifestLocation>${project.basedir}/META-INF</manifestLocation>
+							<!-- 
+							  - Enabling this currently seems to cause spurious exceptions in Eclipse 
+ 							<supportIncrementalBuild>true</supportIncrementalBuild>
+							  -->
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
+					<execution>
+						<phase>clean</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+						<id>clean-manifest-and-osgiinf</id>
+						<configuration>
+							<filesets>
+								<fileset>
+									<directory>${project.basedir}/META-INF</directory>
+									<includes>
+										<include>**</include>
+									</includes>
+								</fileset>
+								<fileset>
+									<directory>${project.basedir}/OSGI-INF</directory>
+									<includes>
+										<include>**</include>
+									</includes>
+								</fileset>
+							</filesets>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -72,7 +137,7 @@
 					<showWarnings>true</showWarnings>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -101,7 +166,6 @@
 
 		<pluginManagement>
 			<plugins>
-				
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
@@ -117,25 +181,24 @@
 					</executions>
 				</plugin>
 
-
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.3</version>
 				</plugin>
-				
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>3.0.1</version>
 				</plugin>
-				
+
 				<plugin>
 					<groupId>org.apache.uima</groupId>
 					<artifactId>jcasgen-maven-plugin</artifactId>
 					<version>${uima-version}</version>
 				</plugin>
-			
+
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>xml-maven-plugin</artifactId>
@@ -159,8 +222,10 @@
 								<stylesheet>${typesystem-stylesheet-location}</stylesheet>
 								<outputDir>${project.build.directory}/generated-sources/doc</outputDir>
 								<fileMappers>
-									<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FlattenFileMapper" />
-									<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+									<fileMapper
+										implementation="org.codehaus.plexus.components.io.filemappers.FlattenFileMapper" />
+									<fileMapper
+										implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
 										<targetExtension>.adoc</targetExtension>
 									</fileMapper>
 								</fileMappers>
@@ -266,7 +331,7 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	
+
 	<profiles>
 		<profile>
 			<id>release-sign-artifacts</id>
@@ -276,7 +341,7 @@
 					<value>true</value>
 				</property>
 			</activation>
-			<build>		
+			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
@@ -296,5 +361,4 @@
 			</build>
 		</profile>
 	</profiles>
-	
 </project>
