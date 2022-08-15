@@ -37,7 +37,6 @@
 	</scm>
 
 	<properties>
-		<groupIdAsPath>de/averbis/textanalysis</groupIdAsPath>
 		<java-version>1.8</java-version>
 		<javadoc.opts>-Xdoclint:none</javadoc.opts>
 		<uima-version>3.4.0-SNAPSHOT</uima-version>
@@ -56,75 +55,8 @@
 		</snapshotRepository>
 	</distributionManagement>
 
-
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>5.1.6</version>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment>
-						<_dsannotations>*</_dsannotations>
-						<_metatypeannotations>*</_metatypeannotations>
-						<Require-Capability>osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"</Require-Capability>
-						<Provide-Capability>osgi.serviceloader;osgi.serviceloader=org.apache.uima.spi.TypeSystemDescriptionProvider</Provide-Capability>
-					</instructions>
-				</configuration>
-				<executions>
-					<execution>
-						<id>bundle-manifest</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>manifest</goal>
-						</goals>
-						<configuration>
-							<niceManifest>true</niceManifest>
-							<exportScr>true</exportScr>
-							<scrLocation>${project.basedir}/OSGI-INF/..</scrLocation>
-							<manifestLocation>${project.basedir}/META-INF</manifestLocation>
-							<!-- 
-							  - Enabling this currently seems to cause spurious exceptions in Eclipse 
- 							<supportIncrementalBuild>true</supportIncrementalBuild>
-							  -->
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>3.2.0</version>
-				<executions>
-					<execution>
-						<phase>clean</phase>
-						<goals>
-							<goal>clean</goal>
-						</goals>
-						<id>clean-manifest-and-osgiinf</id>
-						<configuration>
-							<filesets>
-								<fileset>
-									<directory>${project.basedir}/META-INF</directory>
-									<includes>
-										<include>**</include>
-									</includes>
-								</fileset>
-								<fileset>
-									<directory>${project.basedir}/OSGI-INF</directory>
-									<includes>
-										<include>**</include>
-									</includes>
-								</fileset>
-							</filesets>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -161,7 +93,6 @@
 					</tags>
 				</configuration>
 			</plugin>
-
 		</plugins>
 
 		<pluginManagement>
@@ -203,97 +134,18 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>xml-maven-plugin</artifactId>
 					<version>1.0</version>
-					<executions>
-						<execution>
-							<goals>
-								<goal>transform</goal>
-							</goals>
-							<phase>generate-resources</phase>
-						</execution>
-					</executions>
-					<configuration>
-						<forceCreation>true</forceCreation>
-						<transformationSets>
-							<transformationSet>
-								<dir>${basedir}/src/main/resources/${groupIdAsPath}/typesystems</dir>
-								<includes>
-									<include>**/*TypeSystem.xml</include>
-								</includes>
-								<stylesheet>${typesystem-stylesheet-location}</stylesheet>
-								<outputDir>${project.build.directory}/generated-sources/doc</outputDir>
-								<fileMappers>
-									<fileMapper
-										implementation="org.codehaus.plexus.components.io.filemappers.FlattenFileMapper" />
-									<fileMapper
-										implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
-										<targetExtension>.adoc</targetExtension>
-									</fileMapper>
-								</fileMappers>
-							</transformationSet>
-						</transformationSets>
-					</configuration>
-					<dependencies>
-						<dependency>
-							<groupId>net.sf.saxon</groupId>
-							<artifactId>saxon</artifactId>
-							<version>${saxon.version}</version>
-						</dependency>
-					</dependencies>
 				</plugin>
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
 					<version>3.0.2</version>
-					<executions>
-						<!-- Copies the xml docs to doc/sources -->
-						<execution>
-							<id>copy-docs</id>
-							<phase>prepare-package</phase>
-							<goals>
-								<goal>copy-resources</goal>
-							</goals>
-							<configuration>
-								<encoding>UTF-8</encoding>
-								<outputDirectory>${project.build.directory}/doc/sources</outputDirectory>
-								<resources>
-									<resource>
-										<directory>src/main/doc</directory>
-										<filtering>true</filtering>
-										<includes>
-											<include>*.adoc</include>
-											<include>figures/*.png</include>
-										</includes>
-									</resource>
-									<resource>
-										<directory>${project.build.directory}/generated-sources/doc</directory>
-										<filtering>true</filtering>
-										<includes>
-											<include>*.adoc</include>
-										</includes>
-									</resource>
-								</resources>
-							</configuration>
-						</execution>
-					</executions>
 				</plugin>
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>2.6</version>
-					<executions>
-						<execution>
-							<id>make doc resources</id>
-							<goals>
-								<goal>single</goal>
-							</goals>
-							<phase>prepare-package</phase>
-							<configuration>
-								<descriptors>
-									<descriptor>src/main/assembly/doc.xml</descriptor>
-								</descriptors>
-							</configuration>
-						</execution>
-					</executions>
 				</plugin>
 
 				<!--This plugin's configuration is used to store Eclipse m2e settings 
@@ -333,6 +185,213 @@
 	</build>
 
 	<profiles>
+		<profile>
+			<id>osgi-module</id>
+			<activation>
+				<file>
+					<exists>marker-osgi-module</exists>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.felix</groupId>
+						<artifactId>maven-bundle-plugin</artifactId>
+						<version>5.1.6</version>
+						<extensions>true</extensions>
+						<configuration>
+							<instructions>
+								<Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment>
+								<_dsannotations>*</_dsannotations>
+								<_metatypeannotations>*</_metatypeannotations>
+								<Require-Capability>
+									osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+								</Require-Capability>
+								<Provide-Capability>
+									osgi.serviceloader;osgi.serviceloader=org.apache.uima.spi.TypeSystemDescriptionProvider,
+									osgi.serviceloader;osgi.serviceloader=org.apache.uima.spi.JCasClassProvider
+								</Provide-Capability>
+							</instructions>
+						</configuration>
+						<executions>
+							<execution>
+								<id>bundle-manifest</id>
+								<phase>process-classes</phase>
+								<goals>
+									<goal>manifest</goal>
+								</goals>
+								<configuration>
+									<niceManifest>true</niceManifest>
+									<exportScr>true</exportScr>
+									<scrLocation>${project.basedir}/OSGI-INF/..</scrLocation>
+									<manifestLocation>${project.basedir}/META-INF</manifestLocation>
+							<!-- 
+							  - Enabling this currently seems to cause spurious exceptions in Eclipse 
+ 							<supportIncrementalBuild>true</supportIncrementalBuild>
+							  -->
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-clean-plugin</artifactId>
+						<version>3.2.0</version>
+						<executions>
+							<execution>
+								<phase>clean</phase>
+								<goals>
+									<goal>clean</goal>
+								</goals>
+								<id>clean-manifest-and-osgiinf</id>
+								<configuration>
+									<filesets>
+										<fileset>
+											<directory>${project.basedir}/META-INF</directory>
+											<includes>
+												<include>**</include>
+											</includes>
+										</fileset>
+										<fileset>
+											<directory>${project.basedir}/OSGI-INF</directory>
+											<includes>
+												<include>**</include>
+											</includes>
+										</fileset>
+									</filesets>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>typesystem-module</id>
+			<activation>
+				<file>
+					<exists>marker-typesystem-module</exists>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.uima</groupId>
+						<artifactId>jcasgen-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>default</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+								<configuration>
+									<typeSystemIncludes>
+										<typeSystemInclude>src/main/resources/**/*TypeSystem.xml</typeSystemInclude>
+									</typeSystemIncludes>
+									<limitToProject>true</limitToProject>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>xml-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>transform</goal>
+								</goals>
+								<phase>generate-resources</phase>
+							</execution>
+						</executions>
+						<configuration>
+							<forceCreation>true</forceCreation>
+							<transformationSets>
+								<transformationSet>
+									<dir>${basedir}/src/main/resources</dir>
+									<includes>
+										<include>**/*TypeSystem.xml</include>
+									</includes>
+									<stylesheet>${typesystem-stylesheet-location}</stylesheet>
+									<outputDir>${project.build.directory}/generated-sources/doc</outputDir>
+									<fileMappers>
+										<fileMapper
+											implementation="org.codehaus.plexus.components.io.filemappers.FlattenFileMapper" />
+										<fileMapper
+											implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+											<targetExtension>.adoc</targetExtension>
+										</fileMapper>
+									</fileMappers>
+								</transformationSet>
+							</transformationSets>
+						</configuration>
+						<dependencies>
+							<dependency>
+								<groupId>net.sf.saxon</groupId>
+								<artifactId>saxon</artifactId>
+								<version>${saxon.version}</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<executions>
+						<!-- Copies the xml docs to doc/sources -->
+							<execution>
+								<id>copy-docs</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<encoding>UTF-8</encoding>
+									<outputDirectory>${project.build.directory}/doc/sources</outputDirectory>
+									<resources>
+										<resource>
+											<directory>src/main/doc</directory>
+											<filtering>true</filtering>
+											<includes>
+												<include>*.adoc</include>
+												<include>figures/*.png</include>
+											</includes>
+										</resource>
+										<resource>
+											<directory>${project.build.directory}/generated-sources/doc</directory>
+											<filtering>true</filtering>
+											<includes>
+												<include>*.adoc</include>
+											</includes>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>make doc resources</id>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<phase>prepare-package</phase>
+								<configuration>
+									<descriptors>
+										<descriptor>src/main/assembly/doc.xml</descriptor>
+									</descriptors>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
 		<profile>
 			<id>release-sign-artifacts</id>
 			<activation>
