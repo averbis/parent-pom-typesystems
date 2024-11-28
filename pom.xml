@@ -223,6 +223,15 @@
 					<artifactId>lifecycle-mapping</artifactId>
 					<version>1.0.0</version>
 				</plugin>
+				
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>3.1.1</version>
+					<configuration>
+						<releaseProfiles>release-sign-artifacts</releaseProfiles>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
