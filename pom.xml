@@ -92,7 +92,13 @@
 					</execution>
 				</executions>
 			</plugin>
-		
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.3.1</version>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -229,7 +235,7 @@
 					<artifactId>maven-release-plugin</artifactId>
 					<version>3.1.1</version>
 					<configuration>
-						<releaseProfiles>release-sign-artifacts</releaseProfiles>
+						<releaseProfiles>release-sign-artifacts,attach-javadoc,attach-source</releaseProfiles>
 					</configuration>
 				</plugin>
 			</plugins>
@@ -449,6 +455,52 @@
 										<descriptor>src/main/assembly/doc.xml</descriptor>
 									</descriptors>
 								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>attach-javadoc</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-javadoc</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>attach-source</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-source</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>attach-test-source</id>
+								<goals>
+									<goal>test-jar-no-fork</goal>
+								</goals>
 							</execution>
 						</executions>
 					</plugin>
