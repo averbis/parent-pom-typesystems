@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>de.averbis.textanalysis</groupId>
@@ -36,11 +38,17 @@
 	</scm>
 
 	<properties>
-		<java-version>17</java-version>
+		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.release>17</maven.compiler.release>
+		<maven.compiler.proc>none</maven.compiler.proc>
+		<execution.environment>JavaSE-17</execution.environment>
+
+		<bnd-version>7.1.0</bnd-version>
 		<maven-version>3.8.1</maven-version>
-		<uima-version>3.6.0-SNAPSHOT</uima-version>
-		<bnd-version>7.0.0</bnd-version>
-		<saxon-version>8.7</saxon-version>
+		<uima-version>3.6.0</uima-version>
+		<saxon.version>8.7</saxon.version>
+
 		<typesystem-stylesheet-location>${basedir}/../doc/typesystem.xslt</typesystem-stylesheet-location>
 		
 		<osgi-export-package>!*</osgi-export-package>
@@ -79,7 +87,7 @@
 									<version>${maven-version}</version>
 								</requireMavenVersion>
 								<requireJavaVersion>
-									<version>${java-version}</version>
+									<version>${maven.compiler.release}</version>
 								</requireJavaVersion>
 							</rules>
 						</configuration>
@@ -96,7 +104,6 @@
 					<release>${java-version}</release>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -170,6 +177,18 @@
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<version>3.2.7</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>3.4.0</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.13.0</version>
 				</plugin>
@@ -177,7 +196,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.10.0</version>
+					<version>3.11.1</version>
 				</plugin>
 
 				<plugin>
@@ -203,56 +222,17 @@
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>3.7.1</version>
 				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-clean-plugin</artifactId>
-					<version>3.4.0</version>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-gpg-plugin</artifactId>
-					<version>3.2.6</version>
-				</plugin>
 				
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>3.5.0</version>
+					<version>3.5.2</version>
 				</plugin>
 
-				<plugin>
-					<groupId>org.apache.felix</groupId>
-					<artifactId>maven-bundle-plugin</artifactId>
-					<version>5.1.9</version>
-				</plugin>
-
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
 					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.codehaus.mojo</groupId>
-										<artifactId>xml-maven-plugin</artifactId>
-										<versionRange>[1.0,)</versionRange>
-										<goals>
-											<goal>transform</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -405,8 +385,10 @@
 									<stylesheet>${typesystem-stylesheet-location}</stylesheet>
 									<outputDir>${project.build.directory}/generated-sources/doc</outputDir>
 									<fileMappers>
-										<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FlattenFileMapper" />
-										<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+										<fileMapper
+											implementation="org.codehaus.plexus.components.io.filemappers.FlattenFileMapper" />
+										<fileMapper
+											implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
 											<targetExtension>.adoc</targetExtension>
 										</fileMapper>
 									</fileMappers>
@@ -425,7 +407,7 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-resources-plugin</artifactId>
 						<executions>
-						<!-- Copies the xml docs to doc/sources -->
+							<!-- Copies the xml docs to doc/sources -->
 							<execution>
 								<id>copy-docs</id>
 								<phase>prepare-package</phase>
@@ -502,6 +484,46 @@
 						</executions>
 					</plugin>
 				</plugins>
+			</build>
+		</profile>
+		
+		<profile>
+			<id>m2e</id>
+			<activation>
+				<property>
+					<name>m2e.version</name>
+				</property>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<!--This plugin's configuration is used to store Eclipse m2e settings 
+							only. It has no influence on the Maven build itself. -->
+						<plugin>
+							<groupId>org.eclipse.m2e</groupId>
+							<artifactId>lifecycle-mapping</artifactId>
+							<configuration>
+								<lifecycleMappingMetadata>
+									<pluginExecutions>
+										<pluginExecution>
+											<pluginExecutionFilter>
+												<groupId>org.codehaus.mojo</groupId>
+												<artifactId>xml-maven-plugin</artifactId>
+												<versionRange>[1.0,)</versionRange>
+												<goals>
+													<goal>transform</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<ignore />
+											</action>
+										</pluginExecution>
+									</pluginExecutions>
+								</lifecycleMappingMetadata>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
 			</build>
 		</profile>
 	</profiles>
