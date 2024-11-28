@@ -47,7 +47,7 @@
 		<bnd-version>7.1.0</bnd-version>
 		<maven-version>3.8.1</maven-version>
 		<uima-version>3.6.0</uima-version>
-		<saxon.version>8.7</saxon.version>
+		<saxon-version>8.7</saxon-version>
 
 		<typesystem-stylesheet-location>${basedir}/../doc/typesystem.xslt</typesystem-stylesheet-location>
 		
