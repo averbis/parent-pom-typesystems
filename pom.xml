@@ -38,9 +38,9 @@
 	</scm>
 
 	<properties>
-		<maven.compiler.target>17</maven.compiler.target>
-		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.release>17</maven.compiler.release>
+		<maven.compiler.target>${maven.compiler.release}</maven.compiler.target>
+		<maven.compiler.source>${maven.compiler.release}</maven.compiler.source>
 		<maven.compiler.proc>none</maven.compiler.proc>
 		<execution.environment>JavaSE-17</execution.environment>
 
@@ -84,10 +84,10 @@
 						<configuration>
 							<rules>
 								<requireMavenVersion>
-									<version>${maven-version}</version>
+									<version>[${maven-version},)</version>
 								</requireMavenVersion>
 								<requireJavaVersion>
-									<version>${maven.compiler.release}</version>
+									<version>[${maven.compiler.release},)</version>
 								</requireJavaVersion>
 							</rules>
 						</configuration>
@@ -95,15 +95,6 @@
 				</executions>
 			</plugin>
 		
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>${java-version}</source>
-					<target>${java-version}</target>
-					<release>${java-version}</release>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
