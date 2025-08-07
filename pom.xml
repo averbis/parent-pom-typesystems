@@ -22,6 +22,7 @@
 
 	<developers>
 		<developer>
+			<id>averbis</id>
 			<email>info@averbis.com</email>
 			<organization>Averbis</organization>
 			<organizationUrl>https://averbis.com/</organizationUrl>
@@ -57,10 +58,6 @@
 	</properties>
 
 	<distributionManagement>
-		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-		</repository>
 		<snapshotRepository>
 			<id>github</id>
 			<name>GitHub Packages</name>
@@ -100,43 +97,13 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<version>0.8.0</version>
+				<extensions>true</extensions>
 				<configuration>
-					<tags>
-						<tag>
-							<name>generated</name>
-							<placement>X</placement>
-						</tag>
-						<tag>
-							<name>ordered</name>
-							<placement>X</placement>
-						</tag>
-						<tag>
-							<name>modifiable</name>
-							<placement>X</placement>
-						</tag>
-						<tag>
-							<name>forRemoval</name>
-							<placement>a</placement>
-							<head>To be removed in version:</head>
-						</tag>
-						<tag>
-							<name>apiNote</name>
-							<placement>a</placement>
-							<head>API note:</head>
-						</tag>
-						<tag>
-							<name>implSpec</name>
-							<placement>a</placement>
-							<head>Implementation specification:</head>
-						</tag>
-						<tag>
-							<name>implNote</name>
-							<placement>a</placement>
-							<head>Implementation note:</head>
-						</tag>
-					</tags>
+					<deploymentName>Averbis Type Systems Parent</deploymentName>
+					<publishingServerId>central</publishingServerId>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -192,6 +159,43 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>3.11.1</version>
+					<configuration>
+						<quiet>true</quiet>
+						<tags>
+							<tag>
+								<name>generated</name>
+								<placement>X</placement>
+							</tag>
+							<tag>
+								<name>ordered</name>
+								<placement>X</placement>
+							</tag>
+							<tag>
+								<name>modifiable</name>
+								<placement>X</placement>
+							</tag>
+							<tag>
+								<name>forRemoval</name>
+								<placement>a</placement>
+								<head>To be removed in version:</head>
+							</tag>
+							<tag>
+								<name>apiNote</name>
+								<placement>a</placement>
+								<head>API note:</head>
+							</tag>
+							<tag>
+								<name>implSpec</name>
+								<placement>a</placement>
+								<head>Implementation specification:</head>
+							</tag>
+							<tag>
+								<name>implNote</name>
+								<placement>a</placement>
+								<head>Implementation note:</head>
+							</tag>
+						</tags>
+					</configuration>
 				</plugin>
 
 				<plugin>
