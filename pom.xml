@@ -41,7 +41,9 @@
 		<maven.compiler.target>${maven.compiler.release}</maven.compiler.target>
 		<maven.compiler.source>${maven.compiler.release}</maven.compiler.source>
 		<maven.compiler.proc>none</maven.compiler.proc>
-		<execution.environment>JavaSE-17</execution.environment>
+		<execution.environment>JavaSE-${maven.compiler.release}</execution.environment>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<bnd-version>7.1.0</bnd-version>
 		<maven-version>3.8.1</maven-version>
