@@ -27,6 +27,9 @@ Release checklist for feature releases that increase the first or second version
 - [ ] Trigger a release build of the maintenance branch. The **new** version should be the version of
       the next bugfix release. E.g. if you release `3.3.0`, then the new version should be `3.3.1-SNAPSHOT`.
 
+**[Central Portal](https://central.sonatype.com/publishing/deployments)**
+- [ ] Publish release to Maven Central
+
 **Local**
 - [ ] Merge the maintenance branch into the main branch using `git merge -s ours <branchname>`
 - [ ] Update the version in the POM files on the main branch to the next feature release version.

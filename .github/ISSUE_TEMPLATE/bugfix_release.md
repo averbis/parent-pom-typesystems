@@ -20,6 +20,9 @@ Release checklist for feature releases that increase the third/last version digi
 **[GitHub](https:../actions/workflows/maven-release-build.yml)**
 - [ ] Trigger a release build of the maintenance branch
 
+**[Central Portal](https://central.sonatype.com/publishing/deployments)**
+- [ ] Publish release to Maven Central
+
 **Local**
 - [ ] Merge the maintenance branch into the main branch using `git merge -s ours <branchname>` and push
 
